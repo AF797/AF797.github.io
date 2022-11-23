@@ -2,7 +2,7 @@
 
 ## Interface
 
-![Screenshot_20221123_030541.jpg](FaceLotto%20feaebbd60cd648fabc2e30fec977cdf8/Screenshot_20221123_030541.jpg)
+![Screenshot_20221123_030541](https://user-images.githubusercontent.com/86837707/203463549-5fcbe4b5-9858-4820-b4c0-bf2db912273b.jpg)
 
 ## Note
 
