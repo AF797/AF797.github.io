@@ -2,7 +2,7 @@
 
 ## Interface
 
-![Screenshot_20221123_030541](https://user-images.githubusercontent.com/86837707/203463549-5fcbe4b5-9858-4820-b4c0-bf2db912273b.jpg)
+![Screenshot_20221123_030541](https://user-images.githubusercontent.com/86837707/203463828-ce1f072b-b65a-4dd4-a261-7c873e1272fa.jpg)
 
 ## Note
 
