@@ -14,7 +14,7 @@ async function start() {
   const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6)
   let image
   let canvas
-  document.body.append("사진이 뜨지 않을 때는 사진을 다시 등록해주세요!")  
+  document.body.append("사진이 뜨지 않을 때는 다른 사진을 다시 등록해주세요!")  
   imageUpload.addEventListener('change', async () => {
     if (image) image.remove()
     if (canvas) canvas.remove()
