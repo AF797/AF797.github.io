@@ -14,7 +14,7 @@ async function start() {
   const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6)
   let image
   let canvas
-  document.body.append("사진이 뜨지 않을 때는 다른 사진을 다시 등록해주세요!")  
+  document.body.append("사진이 뜨지 않을 때는 다른 사진을 다시 등록해주세요!!")  
   imageUpload.addEventListener('change', async () => {
     if (image) image.remove()
     if (canvas) canvas.remove()
@@ -22,7 +22,7 @@ async function start() {
     container.append(image)
     canvas = faceapi.createCanvasFromMedia(image)
     container.append(canvas)
-    const displaySize = { width: image.width, height: image.height }
+    const displaySize = { width: image.width/2, height: image.height/2 }
     faceapi.matchDimensions(canvas, displaySize)
     const detections = await faceapi.detectAllFaces(image).withFaceLandmarks().withFaceDescriptors()
     const resizedDetections = faceapi.resizeResults(detections, displaySize)
@@ -54,7 +54,7 @@ async function start() {
 }
 
 function loadLabeledImages() {
-  const labels = ['Black Widow', 'Captain America', 'Captain Marvel', 'Hawkeye', 'Hyunjin Seo', 'Jim Rhodes', 'Min', 'Thor', 'Tony Stark']
+  const labels = ['Hyunjin Seo', 'Min', 'Tony Stark']
   return Promise.all(
     labels.map(async label => {
       const descriptions = []
