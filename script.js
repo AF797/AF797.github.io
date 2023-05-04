@@ -31,6 +31,9 @@ async function start() {
     const results = resizedDetections.map(d => faceMatcher.findBestMatch(d.descriptor))
     document.getElementById("result").innerHTML=""; // lotto reset
     results.forEach((result, i) => {
+      const box = resizedDetections[i].detection.box
+      const drawBox = new faceapi.draw.DrawBox(box, { label: 'face' })
+      drawBox.draw(canvas)
       //-----------------------------------------------------------------------------------------
       var lotto = [];
       for(var i=0;i<6;i++){
@@ -50,9 +53,6 @@ async function start() {
       document.getElementById("result").innerHTML=str;
       //document.body.append().innerHTML=str;
       //-----------------------------------------------------------------------------------------
-      const box = resizedDetections[i].detection.box
-      const drawBox = new faceapi.draw.DrawBox(box, { label: 'face' })
-      drawBox.draw(canvas)
     })
   })
 }
