@@ -199,6 +199,9 @@
                             win_num++;
                             var element = document.getElementById('win_num');
                             element.innerText = win_num;
+                            if (win_num === 5) {
+                                window.location.href = 'AI_TTT_hard.html';
+                            }
                         }
                         else if(currentPlayerComputer === board[rowA][colA])
                         {
