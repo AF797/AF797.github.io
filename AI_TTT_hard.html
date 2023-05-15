@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI vs human (Tic Tac Toe)</title>
+    <style>
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: 100px 100px 100px;
+            grid-template-rows: 100px 100px 100px;
+            grid-gap: 5px;
+            width: 300px;
+            height: 300px;
+        }
+
+        .cell {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            background-color: lightgray;
+            cursor: pointer;
+            border: 1px solid gray;
+        }
+
+        .cell:hover {
+            background-color: darkgray;
+        }
+
+        .computer-move {
+            background-color: lightblue;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        #win_num {
+            font-size: 24px; /* 원하는 크기로 조절 */
+        }
+    </style>
+</head>
+<body>
+    <br> <br>
+    <img src="TTT_title.jpg" alt="My Image">
+    <h3>승리한 횟수</h3>
+    <div id="win_num"></div>
+    <div class="container">
+        <h2>Choose your side:&nbsp;</h2>
+        <button onclick="startGame('X')">X</button>
+        &nbsp;
+        <button onclick="startGame('O')">O</button>
+    </div>
+    <br>
+    <div class="board" style="display: none">
+        <div class="cell" onclick="makeMove(0, 0)"></div>
+        <div class="cell" onclick="makeMove(0, 1)"></div>
+        <div class="cell" onclick="makeMove(0, 2)"></div>
+        <div class="cell" onclick="makeMove(1, 0)"></div>
+        <div class="cell" onclick="makeMove(1, 1)"></div>
+        <div class="cell" onclick="makeMove(1, 2)"></div>
+        <div class="cell" onclick="makeMove(2, 0)"></div>
+        <div class="cell" onclick="makeMove(2, 1)"></div>
+        <div class="cell" onclick="makeMove(2, 2)"></div>
+    </div>
+    <br>
+    <button onclick="resetGame()">reset</button>
+
+    <script>
+        let currentPlayerPlayer;
+        let currentPlayerComputer;
+        let win_num = 0;
+        document.getElementById("win_num").innerHTML=win_num;
+        let turn = 0;
+        let board;
+        let cells;
+
+        function startGame(side) {
+            currentPlayerPlayer = side;
+            currentPlayerComputer = (side === 'X') ? 'O' : 'X';
+            board = [
+                ['', '', ''],
+                ['', '', ''],
+                ['', '', '']
+            ];
+            cells = document.getElementsByClassName('cell');
+
+            const container = document.getElementsByClassName('container')[0];
+            container.style.display = 'none';
+
+            const gameBoard = document.getElementsByClassName('board')[0];
+            gameBoard.style.display = 'grid';
+
+            if(side === 'O'){
+                alert(`휴먼이 후공입니다!!`);
+            } else{alert(`휴먼이 선공입니다!!`);}
+
+            for (const cell of cells) {
+                cell.onclick = function () {
+                    if (currentPlayerPlayer === side && this.textContent === '') {
+                        const index = Array.from(cells).indexOf(this);
+                        const row = Math.floor(index / 3);
+                        const col = index % 3;
+                        makeMove(row, col);
+                        ++turn;
+                    }
+                };
+                cell.textContent = '';
+                cell.classList.remove('computer-move');
+            }
+
+            if (currentPlayerComputer === 'X') {
+                makeComputerMove();
+            }
+        }
+
+        function makeMove(row, col) {
+            if (board[row][col] === '') {
+                board[row][col] = currentPlayerPlayer;
+                const cell = document.getElementsByClassName('cell')[row * 3 + col];
+                cell.textContent = currentPlayerPlayer;
+                cell.onclick = null;
+                checkWin();
+                if (!isBoardFull()) {
+                    makeComputerMove();
+                }
+                if (turn == 1)
+                {
+                    makeComputerMove();
+                    makeComputerMove();
+                    alert(`그래서 휴먼이 무엇을 할 수 있지?`);
+                }
+            }
+        }
+
+        function makeComputerMove() {
+            const emptyCells = getEmptyCells();
+            if (emptyCells.length > 0 && currentPlayerComputer === 'X') {
+                const randomIndex = Math.floor(Math.random() * emptyCells.length);
+                const [row, col] = emptyCells[randomIndex];
+                board[row][col] = currentPlayerComputer;
+                const cell = document.getElementsByClassName('cell')[row * 3 + col];
+                cell.textContent = currentPlayerComputer;
+                cell.onclick = null;
+                checkWin();
+            }
+            if (emptyCells.length > 0 && currentPlayerComputer === 'O') {
+                const randomIndex = Math.floor(Math.random() * emptyCells.length);
+                const [row, col] = emptyCells[randomIndex];
+                board[row][col] = currentPlayerComputer;
+                const cell = document.getElementsByClassName('cell')[row * 3 + col];
+                cell.textContent = currentPlayerComputer;
+                cell.onclick = null;
+                checkWin();
+            }
+        }
+
+        function checkWin() {
+            const winConditions = [
+                [[0, 0], [0, 1], [0, 2]],
+                [[1, 0], [1, 1], [1, 2]],
+                [[2, 0], [2, 1], [2, 2]],
+                [[0, 0], [1, 0], [2, 0]],
+                [[0, 1], [1, 1], [2, 1]],
+                [[2, 2], [1, 2], [0, 2]],
+                [[0, 0], [1, 1], [2, 2]],
+                [[0, 2], [1, 1], [2, 0]]
+            ];
+
+            for (const condition of winConditions) {
+                const [a, b, c] = condition;
+                const [rowA, colA] = a;
+                const [rowB, colB] = b;
+                const [rowC, colC] = c;
+
+                if (
+                    board[rowA][colA] !== '' &&
+                    board[rowA][colA] === board[rowB][colB] &&
+                    board[rowA][colA] === board[rowC][colC]
+                ) {
+                    highlightWinningCells(condition);
+                    setTimeout(() => {
+                        if(currentPlayerPlayer === board[rowA][colA])
+                        {
+                            alert(`잘하시는군요 휴먼`);
+                            win_num++;
+                            var element = document.getElementById('win_num');
+                            element.innerText = win_num;
+                        }
+                        else if(currentPlayerComputer === board[rowA][colA])
+                        {
+                            alert(`인간시대의 끝이 도래했다!!`);
+                        }
+                            
+                        resetGame();
+                    }, 200);
+                    return;
+                }
+            }
+
+            if (isBoardFull()) {
+                setTimeout(() => {
+                    alert('꽤나 잘버티는군요');
+                    resetGame();
+                }, 200);
+            }
+        }
+
+        function highlightWinningCells(cells) {
+            for (const cell of cells) {
+                const [row, col] = cell;
+                const cellElement = document.getElementsByClassName('cell')[row * 3 + col];
+                cellElement.classList.add('computer-move');
+            }
+        }
+
+        function resetGame() {
+            currentPlayer = undefined;
+            board = [
+                ['', '', ''],
+                ['', '', ''],
+                ['', '', '']
+            ];
+
+            const container = document.getElementsByClassName('container')[0];
+            container.style.display = 'flex';
+
+            const gameBoard = document.getElementsByClassName('board')[0];
+            gameBoard.style.display = 'none';
+
+            for (const cell of cells) {
+                cell.textContent = '';
+                cell.onclick = null;
+                cell.classList.remove('computer-move');
+            }
+            turn = 0;
+        }
+
+        function getEmptyCells() {
+            const emptyCells = [];
+            for (let row = 0; row < 3; row++) {
+                for (let col = 0; col < 3; col++) {
+                    if (board[row][col] === '') {
+                        emptyCells.push([row, col]);
+                    }
+                }
+            }
+            return emptyCells;
+        }
+
+        function isBoardFull() {
+            for (let row = 0; row < 3; row++) {
+                for (let col = 0; col < 3; col++) {
+                    if (board[row][col] === '') {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>
+
