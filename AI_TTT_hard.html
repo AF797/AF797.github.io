@@ -98,6 +98,7 @@
         let cells;
 
         function startGame(side) {
+            const randnum = Math.floor(Math.random() * 2);
             currentPlayerPlayer = side;
             currentPlayerComputer = (side === 'X') ? 'O' : 'X';
             board = [
@@ -119,7 +120,27 @@
 
             for (const cell of cells) {
                 cell.onclick = function () {
-                    if (currentPlayerPlayer === side && this.textContent === '') {
+                    if (randnum == 0) {
+                        if (turn == 1)
+                        {
+                            makeComputerMove();
+                            makeComputerMove();
+                            alert(`그래서 휴먼이 무엇을 할 수 있지?`);
+                        }
+                        const index = Array.from(cells).indexOf(this);
+                        const row = Math.floor(index / 3);
+                        const col = index % 3;
+                        makeMove(row, col);
+                        ++turn;
+                    }
+                    else if (randnum == 1) {
+                        if (turn == 1)
+                        {
+                            currentPlayerPlayer = (side === 'X') ? 'O' : 'X';
+                            currentPlayerComputer = side;
+                            makeComputerMove();
+                            alert(`그래서 휴먼이 무엇을 할 수 있지?`);
+                        }
                         const index = Array.from(cells).indexOf(this);
                         const row = Math.floor(index / 3);
                         const col = index % 3;
@@ -145,12 +166,6 @@
                 checkWin();
                 if (!isBoardFull()) {
                     makeComputerMove();
-                }
-                if (turn == 1)
-                {
-                    makeComputerMove();
-                    makeComputerMove();
-                    alert(`그래서 휴먼이 무엇을 할 수 있지?`);
                 }
             }
         }
