@@ -199,7 +199,7 @@
                             win_num++;
                             var element = document.getElementById('win_num');
                             element.innerText = win_num;
-                            if (win_num === 5) {
+                            if (win_num % 5 == 0 && win_num > 0) {
                                 window.location.href = 'AI_TTT_hard.html';
                             }
                         }
