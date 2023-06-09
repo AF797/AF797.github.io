@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>내 짝은 어디에?</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column
+    }
+    canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    #map {
+      width: 500px;
+      height: 400px;
+    }
+  </style>
+</head>
+<body>
+  <h1>내 짝은 어디에?</h1>
+  <div id="map"></div>
+  <button onclick="placeRandomPin()">Place Random Pin</button>
+
+  <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=1bb19c8f6495a5506c11c093b737801c&libraries=services"></script>
+  <script>
+    const API_KEY = '1bb19c8f6495a5506c11c093b737801c';
+
+    // 카카오 맵 초기화
+    const initializeMap = () => {
+        const container = document.getElementById('map');
+        const options = {
+        center: new kakao.maps.LatLng(37.5665, 126.9780),
+        level: 7
+        };
+        const map = new kakao.maps.Map(container, options);
+        return map;
+    };
+    
+    // 랜덤한 위치에 핀을 두는 함수
+    const placeRandomPin = () => {
+        const map = initializeMap();
+        const position = new kakao.maps.LatLng(Math.random() * (43.0 - 33.0) + 33.0, Math.random() * (132.0 - 124.0) + 124.0);
+        const marker = new kakao.maps.Marker({ position });
+        marker.setMap(map);
+        // 핀이 있는 위치로 맵 이동
+        map.setCenter(position);
+    };
+    
+    // 페이지 로드 시 카카오 맵 초기화
+    window.onload = initializeMap;
+  
+  </script>
+</body>
+</html>
