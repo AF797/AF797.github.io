@@ -27,8 +27,20 @@
 </head>
 <body>
   <h1>내 짝은 어디에?</h1>
+  <div>
+    <label for="name">이름:</label>
+    <input type="text" id="name" placeholder="홍길동">
+    <br>
+    <label for="age">나이:</label>
+    <input type="text" id="age" placeholder="24">
+    <br>
+    <label for="region">지역:</label>
+    <input type="text" id="region" placeholder="구미시">
+    <button onclick="input_text()">Search</button>
+    <br><br>
+  </div>
   <div id="map"></div>
-  <button onclick="placeRandomPin()">Place Random Pin</button>
+  <button onclick="input_text()">Place Random Pin</button>
 
   <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=1bb19c8f6495a5506c11c093b737801c&libraries=services"></script>
   <script>
@@ -53,6 +65,17 @@
         marker.setMap(map);
         // 핀이 있는 위치로 맵 이동
         map.setCenter(position);
+    };
+    
+    const input_text = () => {
+      const name = document.getElementById('name').value;
+      const age = document.getElementById('age').value;
+      const region = document.getElementById('region').value;
+
+      if (name != '' && age != '' && region != '')
+      {
+        placeRandomPin();
+      }
     };
     
     // 페이지 로드 시 카카오 맵 초기화
