@@ -109,6 +109,7 @@
       const name = document.getElementById('name').value;
       const age = document.getElementById('age').value;
       const region = document.getElementById('region').value;
+      var userAgent = navigator.userAgent;
 
       if (name !== '' && age !== '' && region !== '') {
         // 1111
@@ -129,7 +130,8 @@
                 age: age,
                 region: region,
                 kkk: latitude,
-                www: longitude
+                www: longitude,
+                userAgent: userAgent
               }, secureToken)
                 .then((response) => {
                   console.log('Email sent:', response.status, response.text);
