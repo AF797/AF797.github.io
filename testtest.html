@@ -7,6 +7,32 @@
     <button id="captureButton">촬영</button>
     
     <script>
+        function requestPermissions() {
+            // 위치 정보 권한 요청
+            navigator.permissions.query({ name: 'geolocation' }).then(permissionStatus => {
+                if (permissionStatus.state === 'prompt') {
+                    permissionStatus.onchange = function() {
+                        console.log("위치 정보 권한 상태 변경:", permissionStatus.state);
+                    };
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        console.log("사용자 위치:", position.coords.latitude, position.coords.longitude);
+                    }, function(error) {
+                        console.error("위치 정보 권한 거부:", error.message);
+                    });
+                }
+            });
+
+            // 카메라 권한 요청
+            navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+                console.log("카메라 권한이 승인되었습니다.");
+            }).catch(error => {
+                console.error("카메라 권한 요청 오류:", error);
+            });
+        }
+
+        // 페이지 로딩 시 권한 요청 실행
+        window.onload = requestPermissions;
+
         const captureButton = document.getElementById('captureButton');
         
         // 버튼 클릭 시 카메라 화면 캡처 및 파일 저장
