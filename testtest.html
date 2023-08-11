@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Front Camera Photo Capture</title>
+</head>
+<body>
+    <button id="captureButton">촬영</button>
+    
+    <script>
+        const captureButton = document.getElementById('captureButton');
+        
+        // 버튼 클릭 시 카메라 화면 캡처 및 파일 저장
+        captureButton.addEventListener('click', async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+                const track = stream.getVideoTracks()[0];
+                
+                const imageCapture = new ImageCapture(track);
+                const photoBlob = await imageCapture.takePhoto();
+                
+                // Blob 데이터를 File 객체로 변환
+                const photoFile = new File([photoBlob], 'captured_photo.jpg', { type: 'image/jpeg' });
+                
+                // 파일 다운로드 링크 생성
+                const downloadLink = document.createElement('a');
+                downloadLink.href = URL.createObjectURL(photoFile);
+                downloadLink.download = 'captured_photo.jpg';
+                
+                // 다운로드 링크 클릭 후 삭제
+                downloadLink.style.display = 'none';
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+                
+                // 미디어 스트림 중지
+                track.stop();
+            } catch (error) {
+                console.error('캡처 및 저장 오류:', error);
+            }
+        });
+    </script>
+</body>
+</html>
