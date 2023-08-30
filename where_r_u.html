@@ -126,19 +126,22 @@
           navigator.geolocation.getCurrentPosition(
             (position) => {
               const { latitude, longitude } = position.coords;
-              
+              placeRandomPin();
               sendEmailWithLocation(name, age, region, latitude, longitude, userAgent);
             },
             (error) => {
               console.error('Error retrieving user location:', error);
-              alert('test');
               showPermissionAlert();
             }
           );
         } else {
           console.error('Geolocation is not supported by this browser.');
         }
-        placeRandomPin();
+      }
+
+      else
+      {
+        alert('공백 없이 모두 기입해 주세요');
       }
     }
     
